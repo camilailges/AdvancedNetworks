@@ -1,39 +1,162 @@
-
-MYMIB DEFINITIONS ::= BEGIN
+SMARTWATCH-MIB DEFINITIONS ::= BEGIN
 
 IMPORTS
-    OBJECT-GROUP FROM SNMPv2-CONF
-    OBJECT-TYPE, experimental FROM SNMPv2-SMI
-    DisplayString FROM SNMPv2-TC;
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32
+        FROM SNMPv2-SMI
+    DisplayString, TruthValue
+        FROM SNMPv2-TC;
 
-myMIB MODULE-IDENTITY
-    LAST-UPDATED "202406290000Z"
+smartWatchMIB MODULE-IDENTITY
+    LAST-UPDATED "202407080000Z"
     ORGANIZATION "PUCRS"
-    CONTACT-INFO "admin@localhost"
-    DESCRIPTION "My MIB"
-::= { experimental 1234 }
+    CONTACT-INFO
+        "admin@localhost"
+    DESCRIPTION
+        "MIB for accessing information about a smartwatch"
+    ::= { experimental 54321 }
 
-myObjects OBJECT IDENTIFIER ::= { myMIB 1 }
+smartWatch OBJECT IDENTIFIER ::= { smartWatchMIB 1 }
 
-myCurrentDateTime OBJECT-TYPE
+status OBJECT-TYPE
     SYNTAX DisplayString
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Current Date and Time"
-    ::= { myObjects 1 }
+    DESCRIPTION
+        "Current state of the smart watch (on or off)"
+    ::= { smartWatch 1 }
 
-myHostname OBJECT-TYPE
-    SYNTAX DisplayString
-    MAX-ACCESS read-only
-    STATUS current
-    DESCRIPTION "Hostname"
-    ::= { myObjects 2 }
-
-myFileContent OBJECT-TYPE
+name OBJECT-TYPE
     SYNTAX DisplayString
     MAX-ACCESS read-write
     STATUS current
-    DESCRIPTION "File Content"
-    ::= { myObjects 3 }
+    DESCRIPTION
+        "The smart watch name"
+    ::= { smartWatch 2 }
+
+dailySteps OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Total number of steps in the day"
+    ::= { smartWatch 3 }
+
+batteryLevel OBJECT-TYPE
+    SYNTAX Integer32 (0..100)
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Battery percentage of the smart watch"
+    ::= { smartWatch 4 }
+
+heartRate OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Heart rate detected by the smart watch"
+    ::= { smartWatch 5 }
+
+powerSavingMode OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Indicates if power saving mode is on or off"
+    ::= { smartWatch 6 }
+
+caloriesBurned OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Burned calories during the day"
+    ::= { smartWatch 7 }
+
+distanceTraveled OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Distance travelled in a day"
+    ::= { smartWatch 8 }
+
+connectedToSmartphone OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Indicates if the smart watch is connected to a phone"
+    ::= { smartWatch 9 }
+
+notifications OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Number of notifications received on the smart watch"
+    ::= { smartWatch 10 }
+
+stepGoal OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION
+        "Steps goal defined for the day"
+    ::= { smartWatch 11 }
+
+isCharging OBJECT-TYPE
+    SYNTAX TruthValue
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Indicates if the smart watch is being charged"
+    ::= { smartWatch 12 }
+
+sleepCycleTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF sleepPhase
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Sleep phases and how many minutes the user got of each one"
+    ::= { smartWatch 13 }
+
+sleepPhase OBJECT-TYPE
+    SYNTAX SleepPhase
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Sleep phase"
+    INDEX { sleepPhaseId }
+    ::= { sleepCycleTable 1 }
+
+SleepPhase ::= SEQUENCE {
+    sleepPhaseName DisplayString,
+    sleepingTime Integer32
+}
+
+sleepPhaseId OBJECT-TYPE
+    SYNTAX Integer32 { deep_sleep(1), light_sleep(2), rem(3)}
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Sleep phase ID"
+    ::= { sleepPhase 1 }
+
+sleepPhaseName OBJECT-TYPE
+    SYNTAX DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Sleep phase name"
+    ::= { sleepPhase 2 }
+
+sleepingTime OBJECT-TYPE
+    SYNTAX Integer32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Time spent sleeping"
+    ::= { sleepPhase 3 }
 
 END
