@@ -4,7 +4,7 @@ import sys
 import json
 
 # Path to the JSON file with the SmartWatch data
-json_file_path = './smartwatch_data.json'
+json_file_path = '/workspaces/AdvancedNetworks/smartwatch_data.json'
 
 def load_data():
     try:
